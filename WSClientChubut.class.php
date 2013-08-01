@@ -7,7 +7,7 @@
    */
   class WSClientChubut {
     
-    protected $default_location = "http://example.net/webservices/example.asmx";
+    protected $settings;
     protected $client_options = array();
     protected $debug = false;
     protected $xml;                //full xml
@@ -20,6 +20,10 @@
      */
     public function __construct($debug = false, $location = null, $endpoint = null)
     {
+      $settings = parse_ini_file("settings.ini", true);
+      
+      $this->settings = $settings;
+      
       $this->setLocation($location);
       $this->setEndpoint($endpoint);
       
@@ -76,8 +80,24 @@
          throw $e;
       }
       
-      $this->response = simplexml_load_string($this->xml->any);
-      $this->responseCount = $this->response->count();
+      if(property_exists($this->xml, "any"))
+      {
+        $this->response = simplexml_load_string($this->xml->any);
+        $this->responseCount = $this->response->count();
+      }
+      else
+      {
+        if(is_object($this->xml))
+        {
+          $this->response = $this->xml;
+          $this->responseCount = null;
+        }
+        else
+        {
+          $this->response = simplexml_load_string($this->xml);
+          $this->responseCount = $this->response->count();
+        }
+      }
     }
     
     protected function doQuery($query_method, $arguments = array(), $result_method = null)
@@ -104,7 +124,7 @@
     {
       if(!$endpoint)
       {
-        $this->endpoint = $this->default_location."?wsdl";
+        $this->endpoint = $this->settings["urls"]["default_location"]."?wsdl";
       }
       else
       {
@@ -114,17 +134,9 @@
     
     private function setLocation($location = null)
     {
-      $settings = array();
-      
       if(!$location)
       {
-        $settings = parse_ini_file("settings.ini", true);
-        
-        if(isset($settings["urls"]["default_location"]))
-        {
-          $this->default_location = $settings["urls"]["default_location"];
-        }
-        $this->client_options["location"] = $this->default_location;
+        $this->client_options["location"] = $this->settings["urls"]["default_location"];
       }
       else
       {
