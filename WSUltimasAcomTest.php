@@ -22,7 +22,7 @@ try
 <h3>Ejemplo de WS: últimas ACOM</h3>
 
 <?php foreach($res as $item):?>
-<h4><?php echo $item->volanta;?></h4>
+<h4><?php echo $item->codigo_accion. " - ". $item->volanta;?></h4>
   <p><?php echo $item->bajada1_texto;?></p>
   
 <?php endforeach;?>
