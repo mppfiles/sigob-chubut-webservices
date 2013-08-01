@@ -1,0 +1,3 @@
+; this is an INI file
+[urls]
+default_location = "http://example.com/webservices/ws.asmx";
