@@ -5,7 +5,7 @@ require "WSClientChubut.class.php";
 /**
  * Ejemplo de Accion Comunicacional (clase de dominio)
  *
- * @author mppfiles <mppfiles@gmail.com>
+ * @author mppfiles
  */
 class WSAcom extends WSClientChubut
 {
